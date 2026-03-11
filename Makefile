@@ -72,6 +72,20 @@ release-dated:
 		--push \
 		.
 
+# ── Python PyPI publish ───────────────────────
+.PHONY: build-py
+build-py:
+	rm -rf dist/ build/ nanobot_webui.egg-info/
+	python -m build
+
+.PHONY: publish
+publish: build-py
+	twine upload dist/*
+
+.PHONY: publish-test
+publish-test: build-py
+	twine upload --repository testpypi dist/*
+
 # ── Helpers ───────────────────────────────────
 .PHONY: help
 help:

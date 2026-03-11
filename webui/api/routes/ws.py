@@ -98,6 +98,13 @@ async def ws_chat(websocket: WebSocket) -> None:
 
             elif msg_type == "message":
                 content = raw.get("content", "")
+                # Allow per-message session override so the client can switch sessions
+                # without reconnecting the WebSocket (used by the "new chat" button).
+                msg_session_key = raw.get("session_key")
+                if msg_session_key and msg_session_key.startswith(f"web:{user['id']}"):
+                    if msg_session_key != session_key:
+                        session_key = msg_session_key
+                        await websocket.send_json({"type": "session_info", "session_key": session_key})
                 if not content:
                     continue
 

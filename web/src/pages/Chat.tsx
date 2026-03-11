@@ -69,17 +69,34 @@ export default function Chat() {
     [isAdmin, myPrefix, sessions]
   );
 
-  // Auto-select: if persisted key still exists keep it; otherwise fall back to first session
+  // Auto-select: if persisted key still exists keep it; otherwise fall back to first session.
+  // IMPORTANT: a newly created local session key (starts with myPrefix) won't exist in
+  // mySessions yet (the server only records it on first message), so don't redirect away from it.
   useEffect(() => {
     if (mySessions.length === 0) return;
     const keyExists = currentSessionKey && mySessions.some((s) => s.key === currentSessionKey);
-    if (!keyExists) {
+    if (!keyExists && !currentSessionKey?.startsWith(myPrefix)) {
       setCurrentSession(mySessions[0].key);
     }
-  }, [mySessions, currentSessionKey, setCurrentSession]);
+  }, [mySessions, currentSessionKey, setCurrentSession, myPrefix]);
+
+  // If the current key is a locally-created session (not yet persisted on server),
+  // prepend it to the sidebar list so the user sees it immediately after clicking "+".
+  const displaySessions = useMemo(() => {
+    const isLocalNew =
+      currentSessionKey?.startsWith(myPrefix) &&
+      !mySessions.some((s) => s.key === currentSessionKey);
+    if (isLocalNew && currentSessionKey) {
+      return [{ key: currentSessionKey, updated_at: new Date().toISOString() }, ...mySessions];
+    }
+    return mySessions;
+  }, [currentSessionKey, myPrefix, mySessions]);
 
   const newChat = () => {
-    const key = `web:${user?.id}:${nanoid(8)}`;
+    const hexId = Array.from(crypto.getRandomValues(new Uint8Array(4)), (b) =>
+      b.toString(16).padStart(2, "0")
+    ).join("");
+    const key = `web:${user?.id}:${hexId}`;
     historyLoadedForRef.current = key; // new session has no history
     setCurrentSession(key);
   };
@@ -100,7 +117,7 @@ export default function Chat() {
         </div>
         <ScrollArea className="flex-1">
           <div className="space-y-0.5 p-1" style={{ width: '100%', maxWidth: '100%' }}>
-            {mySessions.map((s) => {
+            {displaySessions.map((s) => {
               const channel = channelOf(s.key);
               const isWeb = channel === "web";
               const parts = s.key.split(":");
@@ -161,7 +178,7 @@ export default function Chat() {
                 </div>
               );
             })}
-            {mySessions.length === 0 && (
+            {displaySessions.length === 0 && (
               <p className="px-2 py-4 text-center text-xs text-muted-foreground">
                 {t("common.noData")}
               </p>

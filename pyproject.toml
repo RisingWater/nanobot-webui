@@ -6,6 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "nanobot-webui"
 version = "0.1.0"
 description = "Web management panel for nanobot"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "kangkang223", email = "chenwk.top@foxmail.com" }
+]
+keywords = ["nanobot", "webui", "ai", "agent"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 requires-python = ">=3.11"
 dependencies = [
     "nanobot-ai==0.1.4.post4",
@@ -15,7 +27,12 @@ dependencies = [
     "bcrypt>=4.1",
     "python-multipart>=0.0.9",
     "boto3>=1.34",
+    "typer>=0.12",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Good0007/nanobot-webui"
+Repository = "https://github.com/Good0007/nanobot-webui"
 
 [project.optional-dependencies]
 dev = [
@@ -25,7 +42,8 @@ dev = [
 ]
 
 [project.scripts]
-nanobot-webui = "webui.__main__:main"
+nanobot-webui = "webui.__main__:main_cli"
+nanobot = "webui.cli:run_nanobot"
 
 [tool.setuptools.packages.find]
 where = ["."]

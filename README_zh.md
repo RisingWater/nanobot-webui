@@ -19,8 +19,9 @@
 - [功能特性](#功能特性)
 - [快速开始](#快速开始)
   - [pip 安装（推荐）](#pip-安装推荐)
-  - [开发模式](#开发模式)
   - [Docker](#docker)
+- [命令行参考](#命令行参考)
+- [开发模式](#开发模式)
 - [项目结构](#项目结构)
 - [认证说明](#认证说明)
 - [技术栈](#技术栈)
@@ -57,43 +58,22 @@
 
 ```bash
 pip install nanobot-webui
-python -m webui                      # 默认启动在 http://0.0.0.0:8080
-python -m webui --port 9090          # 指定端口
 ```
 
-wheel 包内已内嵌编译好的 React 前端，**无需安装 Node.js**。
-
-默认账号：**admin / nanobot**，首次登录后请立即修改密码。
-
----
-
-### 开发模式
-
-**前置条件：** Python ≥ 3.11，[Bun](https://bun.sh) ≥ 1.0
+wheel 包内已内嵌编译好的 React 前端，**无需安装 Node.js**，安装后直接使用 `nanobot` 命令启动。
 
 ```bash
-# 1. 克隆仓库并以可编辑模式安装后端
-git clone https://github.com/Good0007/nanobot-webui.git
-cd nanobot-webui
-pip install -e .
+# 前台启动（WebUI + nanobot 网关一体化）
+nanobot webui
 
-# 2. 启动后端
-python -m webui                      # API + 静态文件服务于 :8080
+# 指定端口
+nanobot webui --port 9090
 
-# 3. 启动前端开发服务器（另开终端）
-cd web
-bun install
-bun dev                              # http://localhost:5173（自动代理 /api → :8080）
+# 后台运行（推荐用于长期部署）
+nanobot webui --daemon
 ```
 
-生产构建：
-
-```bash
-cd web
-bun run build          # 产物输出到 web/dist/，setup.py 自动复制到 webui/web/dist/
-cd ..
-python -m webui        # 后端自动 serve webui/web/dist/
-```
+浏览器访问 **http://localhost:8080**，默认账号：**admin / nanobot**，首次登录后请立即修改密码。
 
 ---
 
@@ -164,6 +144,112 @@ make logs           # 跟踪 compose 日志
 make restart        # docker compose restart
 make build          # 构建本地单架构镜像
 make release-dated  # 构建并推送 :YYYY-MM-DD + :latest（多架构）
+```
+
+---
+
+## 命令行参考
+
+安装 `nanobot-webui` 后，`nanobot` 命令会新增以下子命令：
+
+### `nanobot webui` — 启动 WebUI
+
+```
+用法: nanobot webui [OPTIONS] [COMMAND]
+
+选项:
+  -p, --port INTEGER        WebUI 端口（默认: 8080）
+  -g, --gateway-port INT    nanobot 网关端口（默认: 读取配置文件）
+      --host TEXT           绑定地址（默认: 0.0.0.0）
+  -w, --workspace PATH      覆盖工作区目录
+  -c, --config PATH         指定配置文件路径
+      --no-gateway          仅启动 WebUI，不启动 nanobot 网关/Agent
+  -d, --daemon              后台运行，立即返回
+```
+
+```bash
+nanobot webui                          # 前台启动（WebUI + 网关）
+nanobot webui --port 9090              # 自定义端口
+nanobot webui --daemon                 # 后台运行
+nanobot webui --daemon --port 9090     # 后台 + 自定义端口
+nanobot webui --no-gateway             # 仅启动 WebUI（网关另行启动）
+nanobot webui --workspace ~/myproject  # 指定工作区
+```
+
+### `nanobot webui logs` — 查看日志
+
+```
+用法: nanobot webui logs [OPTIONS]
+
+选项:
+  -f, --follow          实时跟踪日志（类似 tail -f）
+  -n, --lines INTEGER   显示最近 N 行（默认: 50）
+```
+
+```bash
+nanobot webui logs              # 查看最近 50 行
+nanobot webui logs -f           # 实时跟踪
+nanobot webui logs -f -n 100    # 实时跟踪，显示最近 100 行
+```
+
+> 日志文件位于 `~/.nanobot/webui.log`
+
+### `nanobot stop` — 停止后台服务
+
+```bash
+nanobot stop    # 停止后台运行的 WebUI 进程（发送 SIGTERM，6s 后强制 SIGKILL）
+```
+
+### `nanobot status` — 查看运行状态
+
+```bash
+nanobot status  # 显示 WebUI 进程状态 + nanobot 配置信息
+```
+
+示例输出：
+
+```
+🐈 nanobot Status
+
+WebUI: ✓ running (PID 12345 • http://localhost:8080)
+Log  : /Users/xxx/.nanobot/webui.log
+
+Config: /Users/xxx/.nanobot/config.json ✓
+Workspace: /Users/xxx/.nanobot/workspace ✓
+Model: gpt-4o
+...
+```
+
+> **进程状态文件：** PID → `~/.nanobot/webui.pid`，端口 → `~/.nanobot/webui.port`
+
+---
+
+## 开发模式
+
+**前置条件：** Python ≥ 3.11，[Bun](https://bun.sh) ≥ 1.0
+
+```bash
+# 1. 克隆仓库并以可编辑模式安装后端
+git clone https://github.com/Good0007/nanobot-webui.git
+cd nanobot-webui
+pip install -e .
+
+# 2. 启动后端
+nanobot webui                        # API + 静态文件服务于 :8080
+
+# 3. 启动前端开发服务器（另开终端）
+cd web
+bun install
+bun dev                              # http://localhost:5173（自动代理 /api → :8080）
+```
+
+生产构建：
+
+```bash
+cd web
+bun run build          # 产物输出到 web/dist/，setup.py 自动复制到 webui/web/dist/
+cd ..
+nanobot webui          # 后端自动 serve webui/web/dist/
 ```
 
 ---

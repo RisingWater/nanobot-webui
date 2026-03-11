@@ -103,7 +103,12 @@ def _make_provider(config):
     )
 
 
-async def main(web_port: int = 8080) -> None:
+async def main(
+    web_port: int = 8080,
+    gateway_port: int | None = None,
+    web_host: str = "0.0.0.0",
+    workspace: str | None = None,
+) -> None:
     from loguru import logger
 
     from nanobot.agent.loop import AgentLoop
@@ -121,6 +126,10 @@ async def main(web_port: int = 8080) -> None:
     from webui.api.gateway import ServiceContainer, start_api_server
 
     config = load_config()
+    if workspace:
+        config.agents.defaults.workspace = workspace
+    if gateway_port is not None:
+        config.gateway.port = gateway_port
     sync_workspace_templates(config.workspace_path)
 
     bus = MessageBus()
@@ -253,7 +262,7 @@ async def main(web_port: int = 8080) -> None:
     else:
         logger.warning("No IM channels enabled")
 
-    logger.info("Starting nanobot webui on http://0.0.0.0:{}", web_port)
+    logger.info("Starting nanobot webui on http://{}:{}", web_host, web_port)
 
     async def run() -> None:
         try:
@@ -262,7 +271,7 @@ async def main(web_port: int = 8080) -> None:
             await asyncio.gather(
                 agent.run(),
                 channels.start_all(),
-                start_api_server(container, port=web_port),
+                start_api_server(container, host=web_host, port=web_port),
             )
         except KeyboardInterrupt:
             logger.info("Shutting down…")
@@ -276,11 +285,48 @@ async def main(web_port: int = 8080) -> None:
     await run()
 
 
-if __name__ == "__main__":
+def main_cli() -> None:
+    """Entry point for the ``nanobot-webui`` console script."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="nanobot WebUI")
+    parser = argparse.ArgumentParser(
+        prog="nanobot-webui",
+        description="nanobot WebUI — start WebUI + gateway in one process",
+    )
     parser.add_argument("--port", type=int, default=8080, help="WebUI port (default: 8080)")
+    parser.add_argument("--gateway-port", type=int, default=None, dest="gateway_port",
+                        help="nanobot gateway port (default: from config)")
+    parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
+    parser.add_argument("--workspace", default=None, help="Override workspace directory")
+    parser.add_argument("--config", default=None, dest="config_path",
+                        help="Path to config file")
+    parser.add_argument("--daemon", "-d", action="store_true", default=False,
+                        help="Run in the background (PID → ~/.nanobot/webui.pid)")
     args = parser.parse_args()
 
-    asyncio.run(main(web_port=args.port))
+    if args.daemon:
+        from webui.cli import _start_daemon
+        _start_daemon(
+            port=args.port,
+            gateway_port=args.gateway_port,
+            host=args.host,
+            workspace=args.workspace,
+            config_path=args.config_path,
+            no_gateway=False,
+        )
+        return
+
+    if args.config_path:
+        from nanobot.config.loader import set_config_path
+        set_config_path(Path(args.config_path).expanduser().resolve())
+
+    asyncio.run(main(
+        web_port=args.port,
+        gateway_port=args.gateway_port,
+        web_host=args.host,
+        workspace=args.workspace,
+    ))
+
+
+if __name__ == "__main__":
+    main_cli()

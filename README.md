@@ -20,8 +20,9 @@ Provides a full-featured UI to configure, converse with, and manage your nanobot
 - [Features](#features)
 - [Quick Start](#quick-start)
   - [pip install (recommended)](#pip-install-recommended)
-  - [Development](#development)
   - [Docker](#docker)
+- [CLI Reference](#cli-reference)
+- [Development](#development)
 - [Architecture](#architecture)
 - [Authentication](#authentication)
 - [Tech Stack](#tech-stack)
@@ -58,43 +59,23 @@ Provides a full-featured UI to configure, converse with, and manage your nanobot
 
 ```bash
 pip install nanobot-webui
-python -m webui                      # starts on http://0.0.0.0:8080
-python -m webui --port 9090          # custom port
 ```
 
-The pre-built React frontend is bundled in the wheel — no Node.js required.
-
-Default credentials: **admin / nanobot** — change on first login via the user menu.
-
----
-
-### Development
-
-**Prerequisites:** Python ≥ 3.11, [Bun](https://bun.sh) ≥ 1.0
+The pre-built React frontend is bundled in the wheel — **no Node.js required**.  
+After installation, use the `nanobot` command to start the WebUI:
 
 ```bash
-# 1. Clone and install backend in editable mode
-git clone https://github.com/Good0007/nanobot-webui.git
-cd nanobot-webui
-pip install -e .
+# Foreground (WebUI + gateway combined)
+nanobot webui
 
-# 2. Start the backend
-python -m webui                      # API + static on :8080
+# Custom port
+nanobot webui --port 9090
 
-# 3. Start the frontend dev server (separate terminal)
-cd web
-bun install
-bun dev                              # http://localhost:5173  (proxies /api → :8080)
+# Background daemon (recommended for long-running deployments)
+nanobot webui --daemon
 ```
 
-To produce a production build:
-
-```bash
-cd web
-bun run build          # outputs to web/dist/, setup.py copies it to webui/web/dist/
-cd ..
-python -m webui        # backend now serves webui/web/dist/ as static files
-```
+Open **http://localhost:8080** — default credentials: **admin / nanobot** — change on first login.
 
 ---
 
@@ -165,6 +146,112 @@ make logs         # follow compose logs
 make restart      # docker compose restart
 make build        # build local single-arch image
 make release-dated  # build & push :YYYY-MM-DD + :latest (multi-arch)
+```
+
+---
+
+## CLI Reference
+
+Installing `nanobot-webui` extends the `nanobot` command with the following subcommands:
+
+### `nanobot webui` — Start the WebUI
+
+```
+Usage: nanobot webui [OPTIONS] [COMMAND]
+
+Options:
+  -p, --port INTEGER        WebUI HTTP port  (default: 8080)
+  -g, --gateway-port INT    nanobot gateway port  (default: from config)
+      --host TEXT           Bind address  (default: 0.0.0.0)
+  -w, --workspace PATH      Override workspace directory
+  -c, --config PATH         Path to config file
+      --no-gateway          Start WebUI only; skip nanobot gateway/agent
+  -d, --daemon              Run in background; return immediately
+```
+
+```bash
+nanobot webui                          # foreground (WebUI + gateway)
+nanobot webui --port 9090              # custom port
+nanobot webui --daemon                 # background daemon
+nanobot webui --daemon --port 9090     # background + custom port
+nanobot webui --no-gateway             # WebUI only (gateway running elsewhere)
+nanobot webui --workspace ~/myproject  # override workspace
+```
+
+### `nanobot webui logs` — View logs
+
+```
+Usage: nanobot webui logs [OPTIONS]
+
+Options:
+  -f, --follow          Stream log output in real time (like tail -f)
+  -n, --lines INTEGER   Number of lines to show  (default: 50)
+```
+
+```bash
+nanobot webui logs              # last 50 lines
+nanobot webui logs -f           # stream in real time
+nanobot webui logs -f -n 100    # stream, show last 100 lines
+```
+
+> Log file: `~/.nanobot/webui.log`
+
+### `nanobot stop` — Stop the background service
+
+```bash
+nanobot stop    # sends SIGTERM; force-kills after 6 s if needed
+```
+
+### `nanobot status` — Show runtime status
+
+```bash
+nanobot status  # shows WebUI process info + nanobot config summary
+```
+
+Example output:
+
+```
+🐈 nanobot Status
+
+WebUI: ✓ running (PID 12345 • http://localhost:8080)
+Log  : /home/user/.nanobot/webui.log
+
+Config: /home/user/.nanobot/config.json ✓
+Workspace: /home/user/.nanobot/workspace ✓
+Model: gpt-4o
+...
+```
+
+> **State files:** PID → `~/.nanobot/webui.pid`, port → `~/.nanobot/webui.port`
+
+---
+
+## Development
+
+**Prerequisites:** Python ≥ 3.11, [Bun](https://bun.sh) ≥ 1.0
+
+```bash
+# 1. Clone and install backend in editable mode
+git clone https://github.com/Good0007/nanobot-webui.git
+cd nanobot-webui
+pip install -e .
+
+# 2. Start the backend
+nanobot webui                        # API + static on :8080
+
+# 3. Start the frontend dev server (separate terminal)
+cd web
+bun install
+bun dev                              # http://localhost:5173  (proxies /api → :8080)
+```
+
+To produce a production build:
+
+```bash
+cd web
+bun run build          # outputs to web/dist/, setup.py copies it to webui/web/dist/
+cd ..
+nanobot webui          # backend now serves webui/web/dist/ as static files
 ```
 
 ---

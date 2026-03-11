@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { nanoid } from "nanoid";
+import { useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "../../stores/chatStore";
 import { ChatWebSocket, type WsMessage } from "../../lib/ws";
 import { MessageBubble } from "./MessageBubble";
@@ -8,6 +9,7 @@ import { ChatInput } from "./ChatInput";
 
 export function ChatWindow() {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const {
     currentSessionKey,
     messages,
@@ -38,6 +40,14 @@ export function ChatWindow() {
     };
   }, []);
 
+  // Keep the WebSocket's stored session key in sync so that reconnects
+  // always use the current session (e.g. after clicking "new chat").
+  useEffect(() => {
+    if (currentSessionKey) {
+      wsRef.current?.setSession(currentSessionKey);
+    }
+  }, [currentSessionKey]);
+
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -66,6 +76,8 @@ export function ChatWindow() {
             timestamp: new Date().toISOString(),
           });
         }
+        // Refresh the sessions list so newly-created sessions appear in the sidebar.
+        qc.invalidateQueries({ queryKey: ["sessions"] });
       } else if (msg.type === "error") {
         setProgress("");
         setWaiting(false);
@@ -77,7 +89,7 @@ export function ChatWindow() {
         });
       }
     },
-    [addMessage, setCurrentSession, setProgress, setWaiting, t]
+    [addMessage, qc, setCurrentSession, setProgress, setWaiting, t]
   );
 
   useEffect(() => {

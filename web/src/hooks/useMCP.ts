@@ -11,6 +11,7 @@ export interface MCPServer {
   url?: string;
   headers?: Record<string, string>;
   timeout?: number;
+  enabled?: boolean;
 }
 
 export function useMCPServers() {
@@ -24,7 +25,7 @@ export function useCreateMCPServer() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: MCPServer) =>
-      api.post("/mcp/servers", data).then((r) => r.data),
+      api.post(`/mcp/servers/${encodeURIComponent(data.name)}`, data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mcp", "servers"] });
       toast.success("Created");
@@ -52,6 +53,40 @@ export function useDeleteMCPServer() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mcp", "servers"] });
       toast.success("Deleted");
+    },
+  });
+}
+
+export interface MCPToolInfo {
+  name: string;
+  description: string;
+  parameters?: Record<string, unknown>;
+}
+
+export interface MCPServerRuntime {
+  name: string;
+  running: boolean;
+  enabled: boolean;
+  tools: MCPToolInfo[];
+  tool_count: number;
+}
+
+export function useMCPRuntime() {
+  return useQuery<MCPServerRuntime[]>({
+    queryKey: ["mcp", "runtime"],
+    queryFn: () => api.get("/mcp/servers/runtime").then((r) => r.data),
+    refetchInterval: 15000,
+  });
+}
+
+export function useToggleMCPServer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ name, enabled }: { name: string; enabled: boolean }) =>
+      api.patch(`/mcp/servers/${encodeURIComponent(name)}/enabled`, { enabled }).then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["mcp", "servers"] });
+      qc.invalidateQueries({ queryKey: ["mcp", "runtime"] });
     },
   });
 }

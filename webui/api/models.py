@@ -179,6 +179,7 @@ class MCPServerInfo(BaseModel):
     url: str
     headers: dict[str, str]
     timeout: int
+    enabled: bool = True
 
 
 class MCPServerRequest(BaseModel):
@@ -189,6 +190,11 @@ class MCPServerRequest(BaseModel):
     url: str = ""
     headers: dict[str, str] = Field(default_factory=dict)
     timeout: int = 30
+    enabled: bool = True
+
+
+class MCPServerEnabledUpdate(BaseModel):
+    enabled: bool
 
 
 # ---------------------------------------------------------------------------
