@@ -66,7 +66,10 @@
     "assistant": "Assistant",
     "connected": "Connected",
     "disconnected": "Disconnected",
-    "hint": "Enter to send \u00b7 Shift+Enter for new line"
+    "hint": "Enter to send · Shift+Enter for new line",
+    "uploadAttachment": "Upload Attachment",
+    "uploading": "Uploading...",
+    "uploadFailed": "Upload failed"
   },
   "providers": {
     "title": "Providers",
@@ -224,8 +227,25 @@
       "heartbeat": "Scheduled heartbeat task template"
     }
   },
+  "s3": {
+    "title": "S3 Object Storage",
+    "desc": "Configure S3-compatible object storage (Aliyun OSS, AWS S3, etc.). Uploaded files are converted to OSS URLs for model interaction.",
+    "enabled": "Enable S3 Storage",
+    "endpointUrl": "Endpoint URL",
+    "endpointUrlPlaceholder": "https://oss-cn-hangzhou.aliyuncs.com",
+    "accessKeyId": "Access Key ID",
+    "secretAccessKey": "Secret Access Key",
+    "secretPlaceholder": "Leave blank to keep unchanged",
+    "bucket": "Bucket",
+    "region": "Region",
+    "regionPlaceholder": "oss-cn-hangzhou",
+    "publicBaseUrl": "Public URL Prefix",
+    "publicBaseUrlPlaceholder": "https://my-bucket.oss-cn-hangzhou.aliyuncs.com",
+    "publicBaseUrlDesc": "URL prefix for uploaded files. Leave blank to auto-generate from endpoint/bucket."
+  },
   "sysconfig": {
     "tabEditor": "Config Editor",
+    "tabS3": "S3 Storage",
     "tabBackup": "Backup & Restore",
     "synced": "Synced",
     "format": "Format",

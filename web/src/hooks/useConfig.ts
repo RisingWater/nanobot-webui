@@ -135,3 +135,49 @@ export function useSaveRawConfig() {
     },
   });
 }
+
+// ---------------------------------------------------------------------------
+// S3 / OSS Storage
+// ---------------------------------------------------------------------------
+
+export interface S3Config {
+  enabled: boolean;
+  endpoint_url: string;
+  access_key_id: string;
+  secret_access_key: string; // masked in responses
+  bucket: string;
+  region: string;
+  public_base_url: string;
+}
+
+export function useS3Config() {
+  return useQuery<S3Config>({
+    queryKey: ["config", "s3"],
+    queryFn: () => api.get("/config/s3").then((r) => r.data),
+  });
+}
+
+export function useSaveS3Config() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Partial<S3Config>) =>
+      api.put("/config/s3", data).then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["config", "s3"] });
+      toast.success("S3 配置已保存");
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? "保存失败";
+      toast.error(msg);
+    },
+  });
+}
+
+export async function uploadFile(file: File): Promise<string> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await api.post<{ url: string }>("/config/s3/upload", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data.url;
+}
