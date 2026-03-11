@@ -18,6 +18,7 @@ export class ChatWebSocket {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private shouldReconnect = false;
   private url: string;
+  private sessionKey: string | null = null;
 
   constructor(onMessage: MessageHandler, onStatusChange?: StatusHandler) {
     this.onMessage = onMessage;
@@ -27,13 +28,16 @@ export class ChatWebSocket {
     this.url = `${proto}://${host}/ws/chat`;
   }
 
-  connect() {
+  connect(sessionKey?: string) {
     const token = useAuthStore.getState().token;
     if (!token) return;
 
+    if (sessionKey) this.sessionKey = sessionKey;
+
     this.shouldReconnect = true;
 
-    const wsUrl = `${this.url}?token=${encodeURIComponent(token)}`;
+    let wsUrl = `${this.url}?token=${encodeURIComponent(token)}`;
+    if (this.sessionKey) wsUrl += `&session=${encodeURIComponent(this.sessionKey)}`;
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
@@ -69,6 +73,10 @@ export class ChatWebSocket {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({ type: "message", content, session_key: sessionKey }));
     }
+  }
+
+  setSession(sessionKey: string) {
+    this.sessionKey = sessionKey;
   }
 
   cancel() {

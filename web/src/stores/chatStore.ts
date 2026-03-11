@@ -42,7 +42,11 @@ export const useChatStore = create<ChatState>()(
       progressText: "",
 
       setCurrentSession: (key) =>
-        set({ currentSessionKey: key, messages: [], progressText: "" }),
+        set((state) => ({
+          currentSessionKey: key,
+          messages: state.currentSessionKey === key ? state.messages : [],
+          progressText: state.currentSessionKey === key ? state.progressText : "",
+        })),
 
       addMessage: (msg) =>
         set((state) => ({ messages: [...state.messages, msg] })),
@@ -71,7 +75,10 @@ export const useChatStore = create<ChatState>()(
     }),
     {
       name: "nanobot-chat",
-      partialize: (state) => ({ currentSessionKey: state.currentSessionKey }),
+      partialize: (state) => ({
+        currentSessionKey: state.currentSessionKey,
+        messages: state.messages,
+      }),
     }
   )
 );

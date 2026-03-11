@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 from typing import Annotated
@@ -20,6 +21,23 @@ from webui.api.models import (
 router = APIRouter()
 
 _BUILTIN_SKILLS_DIR = Path(__file__).parent.parent.parent.parent / "nanobot" / "skills"
+_DISABLED_SKILLS_FILE = ".disabled_skills.json"
+
+
+def _load_disabled(workspace: Path) -> set[str]:
+    p = workspace / _DISABLED_SKILLS_FILE
+    if not p.exists():
+        return set()
+    try:
+        return set(json.loads(p.read_text(encoding="utf-8")))
+    except Exception:
+        return set()
+
+
+def _save_disabled(workspace: Path, disabled: set[str]) -> None:
+    p = workspace / _DISABLED_SKILLS_FILE
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(sorted(disabled), ensure_ascii=False), encoding="utf-8")
 
 
 def _skill_available(name: str, path: str) -> tuple[bool, str | None]:
@@ -48,7 +66,7 @@ async def list_skills(
 
     loader = SkillsLoader(svc.config.workspace_path)
     all_skills = loader.list_skills(filter_unavailable=False)
-    disabled = set(svc.config.agents.defaults.disabled_skills or [])
+    disabled = _load_disabled(svc.config.workspace_path)
     result = []
     for s in all_skills:
         available, reason = _skill_available(s["name"], s["path"])
@@ -139,18 +157,16 @@ async def toggle_skill(
     _admin: Annotated[dict, Depends(require_admin)],
     svc: Annotated[ServiceContainer, Depends(get_services)],
 ) -> dict:
-    """Enable or disable a skill (persisted in config)."""
-    from nanobot.config.loader import save_config
+    """Enable or disable a skill (persisted in workspace)."""
 
     enabled: bool = bool(body.get("enabled", True))
-    disabled = list(svc.config.agents.defaults.disabled_skills or [])
+    workspace = svc.config.workspace_path
+    disabled = _load_disabled(workspace)
 
     if enabled:
-        disabled = [s for s in disabled if s != name]
+        disabled.discard(name)
     else:
-        if name not in disabled:
-            disabled.append(name)
+        disabled.add(name)
 
-    svc.config.agents.defaults.disabled_skills = disabled
-    save_config(svc.config)
+    _save_disabled(workspace, disabled)
     return {"name": name, "enabled": enabled}

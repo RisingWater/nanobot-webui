@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Download, Upload, ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -22,7 +22,6 @@ import {
   useAgentSettings, useUpdateAgentSettings,
   useGatewayConfig, useUpdateGatewayConfig,
   useWorkspaceFile, useSaveWorkspaceFile,
-  exportWorkspace, useImportWorkspace,
 } from "../hooks/useConfig";
 
 // ── Providers tab ─────────────────────────────────────────────────────────────
@@ -366,22 +365,6 @@ function WorkspaceFileEditor({ name }: { name: string }) {
 function WorkspaceTab() {
   const { t } = useTranslation();
   const [selected, setSelected] = useState("AGENTS.md");
-  const importRef = useRef<HTMLInputElement>(null);
-  const importWs = useImportWorkspace();
-  const [exporting, setExporting] = useState(false);
-
-  const handleExport = async () => {
-    setExporting(true);
-    try { await exportWorkspace(); }
-    finally { setExporting(false); }
-  };
-
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    importWs.mutate(file);
-    e.target.value = "";
-  };
 
   return (
     <div className="flex gap-4 h-full">
@@ -404,19 +387,7 @@ function WorkspaceTab() {
           </button>
         ))}
 
-        <div className="mt-3 pt-3 border-t flex flex-col gap-2">
-          <Button variant="outline" size="sm" className="w-full justify-start gap-2"
-            onClick={handleExport} disabled={exporting}>
-            <Download className="h-3.5 w-3.5" />
-            {t("settings.exportWorkspace")}
-          </Button>
-          <Button variant="outline" size="sm" className="w-full justify-start gap-2"
-            onClick={() => importRef.current?.click()} disabled={importWs.isPending}>
-            <Upload className="h-3.5 w-3.5" />
-            {t("settings.importWorkspace")}
-          </Button>
-          <input ref={importRef} type="file" accept=".zip" hidden onChange={handleImport} />
-        </div>
+
       </div>
 
       {/* Right editor */}

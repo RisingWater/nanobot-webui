@@ -5,7 +5,6 @@ import { useChatStore } from "../../stores/chatStore";
 import { ChatWebSocket, type WsMessage } from "../../lib/ws";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
-import { ScrollArea } from "../ui/scroll-area";
 
 export function ChatWindow() {
   const { t } = useTranslation();
@@ -23,6 +22,7 @@ export function ChatWindow() {
   const wsRef = useRef<ChatWebSocket | null>(null);
   const assistantMsgIdRef = useRef<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const handleWsMessageRef = useRef<(msg: WsMessage) => void>(() => {});
   const [isConnected, setIsConnected] = useState(false);
 
@@ -32,20 +32,23 @@ export function ChatWindow() {
       (connected) => setIsConnected(connected),
     );
     wsRef.current = ws;
-    ws.connect();
+    ws.connect(useChatStore.getState().currentSessionKey ?? undefined);
     return () => {
       ws.disconnect();
     };
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, progressText]);
 
   const handleWsMessage = useCallback(
     (msg: WsMessage) => {
       if (msg.type === "session_info") {
-        if (msg.session_key) setCurrentSession(msg.session_key);
+        if (msg.session_key && msg.session_key !== useChatStore.getState().currentSessionKey) {
+          setCurrentSession(msg.session_key);
+        }
       } else if (msg.type === "progress") {
         setProgress(msg.content ?? "");
       } else if (msg.type === "done") {
@@ -106,8 +109,8 @@ export function ChatWindow() {
   }, [setProgress, setWaiting]);
 
   return (
-    <div className="flex h-full flex-col">
-      <ScrollArea className="flex-1 px-4 py-6">
+    <div className="flex flex-1 min-h-0 flex-col">
+      <div ref={scrollContainerRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-6">
         {messages.length === 0 ? (
           <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-5">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-inner">
@@ -119,14 +122,14 @@ export function ChatWindow() {
             </div>
           </div>
         ) : (
-          <div className="mx-auto max-w-3xl space-y-4">
+          <div className="space-y-4">
             {messages.map((msg) => (
               <MessageBubble key={msg.id} message={msg} />
             ))}
           </div>
         )}
         {isWaiting && progressText && (
-          <div className="mx-auto max-w-3xl mt-4 flex items-start gap-3 px-4">
+          <div className="mt-4 flex items-start gap-3 px-4">
             <div className="flex h-8 w-8 shrink-0 overflow-hidden rounded-full shadow-sm">
               <img src="/icon.png" alt="Nanobot" className="h-8 w-8 object-cover mix-blend-multiply dark:mix-blend-screen dark:brightness-150" />
             </div>
@@ -141,7 +144,7 @@ export function ChatWindow() {
           </div>
         )}
         <div ref={bottomRef} />
-      </ScrollArea>
+      </div>
       <ChatInput
         onSend={handleSend}
         disabled={isWaiting}

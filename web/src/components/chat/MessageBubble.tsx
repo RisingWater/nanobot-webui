@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 import { cn } from "../../lib/utils";
 import type { ChatMessage } from "../../stores/chatStore";
 import { ToolCallCard } from "./ToolCallCard";
@@ -153,7 +154,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                   "[&_table]:text-xs [&_th]:bg-muted",
                   "[&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline",
                 )}>
-                  <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
                     {part.content}
                   </ReactMarkdown>
                 </div>

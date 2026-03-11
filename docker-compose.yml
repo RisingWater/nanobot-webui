@@ -1,12 +1,11 @@
 # nanobot webui — standalone Docker Compose
 services:
   webui:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: kangkang223/nanobot-webui:latest
     container_name: nanobot-webui
     volumes:
       - ~/.nanobot-webui:/root/.nanobot
     ports:
       - "8080:8080"
+      - "18790:18790"
     restart: unless-stopped

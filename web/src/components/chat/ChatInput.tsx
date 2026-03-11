@@ -50,7 +50,7 @@ export function ChatInput({
 
   return (
     <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto max-w-3xl px-4 py-3">
+      <div className="w-full px-4 py-3">
         <div className={cn(
           "relative flex flex-col rounded-2xl border bg-background shadow-sm transition-all",
           isWaiting ? "border-primary/40" : "focus-within:border-primary/60 focus-within:shadow-md"

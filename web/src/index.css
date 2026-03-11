@@ -1,5 +1,6 @@
 @import "@fontsource/inter/index.css";
 @import "@fontsource/jetbrains-mono/index.css";
+@import "highlight.js/styles/github.css" screen;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

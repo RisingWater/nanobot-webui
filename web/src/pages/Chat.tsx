@@ -49,7 +49,10 @@ export default function Chat() {
           timestamp: m.timestamp ?? new Date().toISOString(),
           name: m.name ?? undefined,
         }));
-      setMessages(msgs);
+      // Only overwrite if we got actual history (avoids wiping persisted messages on new empty sessions)
+      if (msgs.length > 0) {
+        setMessages(msgs);
+      }
     }
   }, [currentSessionKey, historyLoaded, sessionMsgs, setMessages]);
 
@@ -86,7 +89,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-2.5rem*2)] gap-4">
+    <div className="flex h-full gap-4 p-5">
       {/* Session sidebar */}
       <aside className="flex w-52 shrink-0 flex-col rounded-lg border bg-card overflow-hidden">
         <div className="flex items-center justify-between border-b px-3 py-2">
