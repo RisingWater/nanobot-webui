@@ -99,16 +99,72 @@ python -m webui        # 后端自动 serve webui/web/dist/
 
 ### Docker
 
-```bash
-# 构建并启动
-docker compose up --build
+**前置条件：** Docker ≥ 24（含 Compose 插件，即 `docker compose` 命令）。
 
-# 或直接运行一体化镜像
-docker build -t nanobot-webui .
-docker run -p 8080:8080 -v ~/.nanobot:/root/.nanobot nanobot-webui
+#### 方式一 — Docker Compose（推荐）
+
+创建 `docker-compose.yml`：
+
+```yaml
+services:
+  webui:
+    image: kangkang223/nanobot-webui:latest
+    container_name: nanobot-webui
+    volumes:
+      - ~/.nanobot-webui:/root/.nanobot   # 配置与数据持久化
+    ports:
+      - "8080:8080"    # WebUI
+      - "18790:18790"  # nanobot 网关（可选，IM 通道 Webhook 回调用）
+    restart: unless-stopped
 ```
 
-浏览器访问 http://localhost:8080
+然后执行：
+
+```bash
+# 拉取最新镜像并在后台启动
+docker compose up -d
+
+# 查看日志
+docker compose logs -f
+
+# 停止
+docker compose down
+```
+
+浏览器访问 **http://localhost:8080**，默认账号：**admin / nanobot**，请在首次登录后立即修改密码。
+
+> **数据目录：** 所有配置、会话及工作区文件保存在宿主机的 `~/.nanobot-webui` 目录（映射到容器内的 `/root/.nanobot`）。
+
+#### 方式二 — 本地构建镜像
+
+```bash
+git clone https://github.com/Good0007/nanobot-webui.git
+cd nanobot-webui
+
+# 多阶段构建（bun 编译前端 → python 运行时）
+docker build -t nanobot-webui .
+
+# 运行
+docker run -d \
+  --name nanobot-webui \
+  -p 8080:8080 \
+  -v ~/.nanobot-webui:/root/.nanobot \
+  --restart unless-stopped \
+  nanobot-webui
+```
+
+#### 方式三 — Makefile 快捷命令
+
+克隆仓库后可直接使用内置 `Makefile`：
+
+```bash
+make up             # docker compose up -d
+make down           # docker compose down
+make logs           # 跟踪 compose 日志
+make restart        # docker compose restart
+make build          # 构建本地单架构镜像
+make release-dated  # 构建并推送 :YYYY-MM-DD + :latest（多架构）
+```
 
 ---
 

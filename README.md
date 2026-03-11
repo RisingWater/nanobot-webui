@@ -100,16 +100,72 @@ python -m webui        # backend now serves webui/web/dist/ as static files
 
 ### Docker
 
-```bash
-# Build and start
-docker compose up --build
+**Prerequisites:** Docker ≥ 24 with the Compose plugin (`docker compose`).
 
-# Or run the all-in-one image directly
-docker build -t nanobot-webui .
-docker run -p 8080:8080 -v ~/.nanobot:/root/.nanobot nanobot-webui
+#### Option 1 — Docker Compose (recommended)
+
+Create a `docker-compose.yml`:
+
+```yaml
+services:
+  webui:
+    image: kangkang223/nanobot-webui:latest
+    container_name: nanobot-webui
+    volumes:
+      - ~/.nanobot-webui:/root/.nanobot   # config & data persistence
+    ports:
+      - "8080:8080"    # WebUI
+      - "18790:18790"  # nanobot gateway (optional, for IM channel webhooks)
+    restart: unless-stopped
 ```
 
-Open http://localhost:8080
+Then:
+
+```bash
+# Pull the latest image and start in background
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop
+docker compose down
+```
+
+Open **http://localhost:8080** — default credentials: **admin / nanobot**.
+
+> **Data directory:** all config, sessions, and workspace files are stored in `~/.nanobot-webui` on the host (mapped to `/root/.nanobot` inside the container).
+
+#### Option 2 — Build from source
+
+```bash
+git clone https://github.com/Good0007/nanobot-webui.git
+cd nanobot-webui
+
+# Build the multi-stage image (bun build → python runtime)
+docker build -t nanobot-webui .
+
+# Run
+docker run -d \
+  --name nanobot-webui \
+  -p 8080:8080 \
+  -v ~/.nanobot-webui:/root/.nanobot \
+  --restart unless-stopped \
+  nanobot-webui
+```
+
+#### Option 3 — Makefile shortcuts
+
+If you have the repository cloned, the bundled `Makefile` wraps common tasks:
+
+```bash
+make up           # docker compose up -d
+make down         # docker compose down
+make logs         # follow compose logs
+make restart      # docker compose restart
+make build        # build local single-arch image
+make release-dated  # build & push :YYYY-MM-DD + :latest (multi-arch)
+```
 
 ---
 
