@@ -52,14 +52,24 @@ push-latest: TAG=latest
 push-latest: push
 
 # Build & push with an explicit version tag AND update latest
+# Usage: make release VERSION=0.1.2
 .PHONY: release
 release:
+ifndef VERSION
+	@echo "Error: VERSION is required. Usage: make release VERSION=0.1.2"
+	@exit 1
+endif
+	@echo "Releasing version $(VERSION)..."
+	@git tag -a v$(VERSION) -m "Release v$(VERSION)" || (echo "Tag v$(VERSION) already exists or git error" && exit 1)
+	@git push origin v$(VERSION)
+	@echo "Git tag v$(VERSION) created and pushed"
 	docker buildx build \
 		--platform $(PLATFORMS) \
-		--tag $(IMAGE):$(TAG) \
+		--tag $(IMAGE):$(VERSION) \
 		--tag $(IMAGE):latest \
 		--push \
 		.
+	@echo "Docker images $(IMAGE):$(VERSION) and $(IMAGE):latest pushed successfully"
 
 # Build & push with a date-based tag (e.g. 2026-03-11) AND update latest
 .PHONY: release-dated
@@ -86,6 +96,12 @@ publish: build-py
 publish-test: build-py
 	twine upload --repository testpypi dist/*
 
+# Build Python package and Docker image together
+# Usage: make release-all VERSION=0.1.2
+.PHONY: release-all
+release-all: publish release
+	@echo "All releases completed successfully!"
+
 # ── Helpers ───────────────────────────────────
 .PHONY: help
 help:
@@ -100,8 +116,13 @@ help:
 	@echo "  make restart        docker compose restart"
 	@echo ""
 	@echo "  make push           Build & push multi-arch image ($(PLATFORMS))"
-	@echo "  make release TAG=x  Build & push :x and :latest"
+	@echo "  make release VERSION=x  Create git tag vX, build & push :x and :latest"
 	@echo "  make release-dated  Build & push :YYYY-MM-DD and :latest"
+	@echo ""
+	@echo "  make build-py       Build Python package (wheel + sdist)"
+	@echo "  make publish        Publish to PyPI (requires .pypirc)"
+	@echo "  make publish-test   Publish to Test PyPI (requires .pypirc)"
+	@echo "  make release-all VERSION=x  Publish PyPI + Docker + create git tag"
 	@echo ""
 	@echo "  Override defaults:"
 	@echo "    IMAGE=$(IMAGE)  TAG=$(TAG)"

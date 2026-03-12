@@ -16,3 +16,6 @@ build
 *.venv
 .DS_Store
 nanobot
+
+# PyPI 配置（包含敏感信息）
+.pypirc
