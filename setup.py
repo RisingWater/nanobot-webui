@@ -28,6 +28,11 @@ def _build_frontend() -> None:
     web_dir = root / "web"           # source: <repo>/web/
     dest_dist = root / "webui" / "web" / "dist"  # target: inside the Python package
 
+    # Pre-built by CI (copied before python -m build runs in isolated env)
+    if dest_dist.exists() and any(dest_dist.iterdir()):
+        print(f"[setup] Frontend dist already present at {dest_dist}, skipping build ✓", file=sys.stderr)
+        return
+
     if not web_dir.exists():
         print("[setup] web/ directory not found, skipping frontend build", file=sys.stderr)
         return

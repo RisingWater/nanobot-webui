@@ -29,7 +29,12 @@ jobs:
         cd web
         bun install --frozen-lockfile
         bun run build
-        
+
+    - name: 复制前端产物到 Python 包目录
+      run: |
+        mkdir -p webui/web
+        cp -r web/dist webui/web/dist
+
     - name: 安装构建工具
       run: |
         python -m pip install --upgrade pip
