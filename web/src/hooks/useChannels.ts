@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../lib/api";
+import i18n from "../i18n";
 
 export interface ChannelStatus {
   name: string;
@@ -24,7 +25,7 @@ export function useUpdateChannel() {
       api.patch(`/channels/${name}`, data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["channels"] });
-      toast.success("Saved");
+      toast.success(i18n.t("channels.saved"));
     },
   });
 }
@@ -36,7 +37,7 @@ export function useReloadChannel() {
       api.post(`/channels/${name}/reload`).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["channels"] });
-      toast.success("Reloaded");
+      toast.success(i18n.t("channels.reloaded"));
     },
   });
 }
@@ -47,7 +48,7 @@ export function useReloadAllChannels() {
     mutationFn: () => api.post("/channels/reload-all").then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["channels"] });
-      toast.success("All channels reloaded");
+      toast.success(i18n.t("channels.reloadedAll"));
     },
   });
 }

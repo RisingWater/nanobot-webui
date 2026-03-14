@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../lib/api";
+import i18n from "../i18n";
 
 export interface CronSchedule {
   minute: string;
@@ -50,7 +51,7 @@ export function useCreateCronJob() {
       api.post("/cron/jobs", data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cron", "jobs"] });
-      toast.success("Created");
+      toast.success(i18n.t("cron.created"));
     },
   });
 }
@@ -62,7 +63,7 @@ export function useUpdateCronJob() {
       api.put(`/cron/jobs/${id}`, data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cron", "jobs"] });
-      toast.success("Saved");
+      toast.success(i18n.t("cron.saved"));
     },
   });
 }
@@ -74,7 +75,7 @@ export function useDeleteCronJob() {
       api.delete(`/cron/jobs/${id}`).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cron", "jobs"] });
-      toast.success("Deleted");
+      toast.success(i18n.t("cron.deleted"));
     },
   });
 }

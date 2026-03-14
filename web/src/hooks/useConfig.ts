@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../lib/api";
+import i18n from "../i18n";
 
 export interface AgentSettings {
   model: string;
@@ -54,7 +55,7 @@ export function useUpdateGatewayConfig() {
       api.patch("/config/gateway", data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["config", "gateway"] });
-      toast.success("Saved");
+      toast.success(i18n.t("settings.saved"));
     },
   });
 }
@@ -74,7 +75,7 @@ export function useSaveWorkspaceFile() {
       api.put(`/config/workspace-file/${name}`, { content }).then((r) => r.data),
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["config", "workspace-file", vars.name] });
-      toast.success("Saved");
+      toast.success(i18n.t("settings.saved"));
     },
   });
 }
@@ -107,11 +108,11 @@ export function useImportWorkspace() {
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["config", "workspace-file"] });
       const msg = data.backup
-        ? `Import successful. Previous config backed up to: ${data.backup}`
-        : "Import successful";
+        ? i18n.t("sysconfig.importSuccessBackup", { path: data.backup })
+        : i18n.t("sysconfig.importSuccess");
       toast.success(msg);
     },
-    onError: () => toast.error("导入失败"),
+    onError: () => toast.error(i18n.t("sysconfig.importFailed")),
   });
 }
 
@@ -129,10 +130,10 @@ export function useSaveRawConfig() {
       api.put("/config/raw", { content }).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["config"] });
-      toast.success("配置已保存");
+      toast.success(i18n.t("sysconfig.saved"));
     },
     onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? "保存失败";
+      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? i18n.t("sysconfig.saveFailed");
       toast.error(msg);
     },
   });
@@ -166,10 +167,10 @@ export function useSaveS3Config() {
       api.put("/config/s3", data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["config", "s3"] });
-      toast.success("S3 配置已保存");
+      toast.success(i18n.t("s3.saved"));
     },
     onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? "保存失败";
+      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? i18n.t("s3.saveFailed");
       toast.error(msg);
     },
   });

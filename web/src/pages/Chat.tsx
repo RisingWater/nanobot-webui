@@ -199,8 +199,18 @@ export default function Chat() {
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (active) {
+                        // Switch to adjacent session before deleting
+                        const idx = displaySessions.findIndex((x) => x.key === s.key);
+                        const next =
+                          displaySessions[idx + 1] ?? displaySessions[idx - 1];
+                        if (next) {
+                          switchSession(next.key);
+                        } else {
+                          newChat();
+                        }
+                      }
                       deleteSession.mutate(s.key);
-                      if (active) newChat();
                     }}
                   >
                     <Trash2 className="h-3 w-3" />

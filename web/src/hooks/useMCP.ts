@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../lib/api";
+import i18n from "../i18n";
 
 export interface MCPServer {
   name: string;
@@ -28,7 +29,7 @@ export function useCreateMCPServer() {
       api.post(`/mcp/servers/${encodeURIComponent(data.name)}`, data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mcp", "servers"] });
-      toast.success("Created");
+      toast.success(i18n.t("mcp.created"));
     },
   });
 }
@@ -40,7 +41,7 @@ export function useUpdateMCPServer() {
       api.put(`/mcp/servers/${name}`, data).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mcp", "servers"] });
-      toast.success("Saved");
+      toast.success(i18n.t("mcp.saved"));
     },
   });
 }
@@ -52,7 +53,7 @@ export function useDeleteMCPServer() {
       api.delete(`/mcp/servers/${name}`).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mcp", "servers"] });
-      toast.success("Deleted");
+      toast.success(i18n.t("mcp.deleted"));
     },
   });
 }

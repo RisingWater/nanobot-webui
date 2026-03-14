@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../lib/api";
+import i18n from "../i18n";
 
 export interface SessionInfo {
   key: string;
@@ -49,7 +50,7 @@ export function useDeleteSession() {
       api.delete(`/sessions/${encodeURIComponent(key)}`).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["sessions"] });
-      toast.success("Session deleted");
+      toast.success(i18n.t("chat.sessionDeleted"));
     },
   });
 }
