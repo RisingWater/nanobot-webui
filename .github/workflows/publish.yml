@@ -29,6 +29,8 @@ jobs:
         cd web
         bun install --frozen-lockfile
         bun run build
+        mkdir -p ../webui/web
+        cp -r dist ../webui/web/dist
         
     - name: 安装构建工具
       run: |
