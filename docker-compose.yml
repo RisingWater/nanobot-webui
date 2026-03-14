@@ -4,8 +4,8 @@ services:
     image: kangkang223/nanobot-webui:latest
     container_name: nanobot-webui
     volumes:
-      - ~/.nanobot-webui:/root/.nanobot
+      - ~/.nanobot:/root/.nanobot
     ports:
-      - "8080:8080"
+      - "18780:18780"
       - "18790:18790"
     restart: unless-stopped

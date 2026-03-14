@@ -11,6 +11,9 @@
     "users": "ユーザー",
     "cron": "定期タスク",
     "systemConfig": "システム設定",
+    "collapse": "メニューを折りたたむ",
+    "expand": "メニューを展開",
+    "more": "もっと見る",
     "section": {
       "general": "一般",
       "admin": "管理"
@@ -58,6 +61,7 @@
     "sessions": "セッション一覧",
     "clearHistory": "履歴をクリア",
     "clearConfirm": "このセッションの履歴をクリアしてもよろしいですか？",
+    "sessionDeleted": "セッションが削除されました",
     "deleteSession": "セッション削除",
     "deleteConfirm": "このセッションを削除してもよろしいですか？",
     "send": "送信",
@@ -71,7 +75,8 @@
     "showToolMessages": "ツール呼び出しを表示",
     "hideToolMessages": "ツール呼び出しを非表示",
     "uploading": "アップロード中...",
-    "uploadFailed": "アップロードに失敗しました"
+    "uploadFailed": "アップロードに失敗しました",
+    "searchSessions": "セッションを検索..."
   },
   "providers": {
     "title": "プロバイダー",
@@ -99,6 +104,7 @@
     "reload": "再読み込み",
     "reloadAll": "すべて再読み込み",
     "reloaded": "再読み込みしました",
+    "reloadedAll": "すべてのチャンネルを再読み込みしました",
     "configure": "設定",
     "save": "保存",
     "saved": "保存されました",
@@ -172,8 +178,10 @@
     "delete": "削除",
     "deleteConfirm": "このMCPサーバーを削除してもよろしいですか？",
     "save": "保存",
+    "created": "作成されました",
     "saved": "保存されました",
     "deleted": "削除されました",
+    "serversAdded": "{{count}} 台のサーバーが追加されました",
     "modeJson": "JSONを貼り付け",
     "modeManual": "手動入力",
     "jsonHint": "Claude Desktop、Cursorなどの標準MCP設定形式をサポートします。直接貼り付けてください。",
@@ -207,6 +215,7 @@
     "delete": "削除",
     "deleteConfirm": "このスキルを削除してもよろしいですか？",
     "save": "保存",
+    "created": "作成されました",
     "saved": "保存されました",
     "deleted": "削除されました",
     "content": "内容",
@@ -228,6 +237,7 @@
     "deleteConfirm": "この定期タスクを削除してもよろしいですか？",
     "enable": "有効化",
     "disable": "無効化",
+    "created": "作成されました",
     "save": "保存",
     "saved": "保存されました",
     "deleted": "削除されました",
@@ -283,7 +293,9 @@
     "regionPlaceholder": "oss-cn-hangzhou",
     "publicBaseUrl": "公開アクセスURLプレフィックス",
     "publicBaseUrlPlaceholder": "https://my-bucket.oss-cn-hangzhou.aliyuncs.com",
-    "publicBaseUrlDesc": "アップロードされたファイルのリンク生成用URLプレフィックス。空白の場合は自動的にendpoint/bucketを結合します"
+    "publicBaseUrlDesc": "アップロードされたファイルのリンク生成用URLプレフィックス。空白の場合は自動的にendpoint/bucketを結合します",
+    "saved": "S3設定が保存されました",
+    "saveFailed": "保存に失敗しました"
   },
   "sysconfig": {
     "tabEditor": "設定エディタ",
@@ -298,6 +310,11 @@
     "exportBtn": "バックアップファイルをダウンロード",
     "exportSuccess": "設定がエクスポートされました",
     "exportError": "エクスポートに失敗しました",
+    "saved": "設定が保存されました",
+    "saveFailed": "保存に失敗しました",
+    "importSuccess": "インポートが完了しました",
+    "importSuccessBackup": "インポートが完了しました。以前の設定は {{path}} にバックアップされました",
+    "importFailed": "インポートに失敗しました",
     "import": ".nanobot設定をインポート",
     "importDesc": "以前にエクスポートしたZIPバックアップファイルをアップロードして、現在の~/.nanobotディレクトリを上書きします。インポート前に既存の設定が自動的にバックアップされます。",
     "importBtn": "バックアップファイルを選択",
@@ -337,12 +354,18 @@
     "no": "いいえ",
     "refresh": "更新",
     "actions": "操作",
+    "status": "状態",
     "darkMode": "ダークモード",
     "lightMode": "ライトモード",
     "language": "言語",
     "chinese": "中文",
     "english": "English",
     "japanese": "日本語",
-    "optional": "オプション"
+    "optional": "オプション",
+    "dismiss": "無視"
+  },
+  "pwa": {
+    "updateAvailable": "新しいバージョンが利用可能です",
+    "reload": "今すぐ更新"
   }
 }

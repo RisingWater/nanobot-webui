@@ -289,6 +289,7 @@ class SessionInfo(BaseModel):
     key: str
     created_at: str | None
     updated_at: str | None
+    last_message: str | None = None  # last user/assistant message preview
 
 
 class MessageInfo(BaseModel):

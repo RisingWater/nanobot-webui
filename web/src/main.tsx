@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 
 import App from "./App";
 import { ThemeProvider } from "./theme/ThemeProvider";
+import { PWAUpdateToast } from "./components/shared/PWAUpdateToast";
 import "./i18n";
 import "./index.css";
 
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <App />
+          <PWAUpdateToast />
           <Toaster position="bottom-right" richColors closeButton />
         </BrowserRouter>
       </QueryClientProvider>

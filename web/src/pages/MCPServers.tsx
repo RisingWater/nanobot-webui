@@ -221,7 +221,7 @@ export default function MCPServers({ hideTitle }: { hideTitle?: boolean } = {}) 
         // toast shown by mutation onError; continue remaining
       }
     }
-    if (ok > 0) toast.success(`${ok} server${ok > 1 ? "s" : ""} added`);
+    if (ok > 0) toast.success(t("mcp.serversAdded", { count: ok }));
     setOpen(false);
   };
 

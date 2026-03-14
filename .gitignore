@@ -4,6 +4,7 @@ __pycache__
 node_modules
 dist
 build
+*.tsbuildinfo
 *.egg-info
 *.whl
 *.pyc
@@ -19,6 +20,8 @@ build
 nanobot
 uv.lock
 web/tsconfig.tsbuildinfo
+dev-dist
 
 # PyPI 配置（包含敏感信息）
 .pypirc
+web/tsconfig.tsbuildinfo

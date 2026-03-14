@@ -21,8 +21,11 @@ export function Header() {
   const [showChangePwd, setShowChangePwd] = useState(false);
 
   const toggleLang = () => {
-    i18n.changeLanguage(i18n.language === "zh" ? "en" : "zh");
+    const next = i18n.language === "zh" ? "en" : i18n.language === "en" ? "ja" : "zh";
+    i18n.changeLanguage(next);
   };
+
+  const langLabel = i18n.language === "zh" ? "中" : i18n.language === "ja" ? "日" : "En";
 
   return (
     <header className="flex h-12 items-center bg-background px-4">
@@ -32,12 +35,13 @@ export function Header() {
       <div className="flex items-center gap-1">
         <Button
           variant="ghost"
-          size="icon"
+          size="sm"
           onClick={toggleLang}
           title={t("common.language")}
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          className="h-8 px-2 gap-1 text-muted-foreground hover:text-foreground text-xs font-medium"
         >
           <Languages className="h-4 w-4" />
+          {langLabel}
         </Button>
 
         <Button

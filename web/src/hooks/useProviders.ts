@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../lib/api";
+import i18n from "../i18n";
 
 export interface ProviderInfo {
   name: string;
@@ -87,7 +88,7 @@ export function useUpdateProvider() {
     }) => api.patch(`/providers/${name}`, { api_key, api_base, extra_headers, models }).then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["providers"] });
-      toast.success("Saved");
+      toast.success(i18n.t("providers.saved"));
     },
   });
 }

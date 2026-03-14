@@ -11,6 +11,9 @@
     "users": "用户",
     "cron": "定时任务",
     "systemConfig": "系统配置",
+    "collapse": "折叠菜单",
+    "expand": "展开菜单",
+    "more": "更多",
     "section": {
       "general": "通用",
       "admin": "管理"
@@ -58,6 +61,7 @@
     "sessions": "会话列表",
     "clearHistory": "清空历史",
     "clearConfirm": "确定要清空此会话的历史消息吗？",
+    "sessionDeleted": "会话已删除",
     "deleteSession": "删除会话",
     "deleteConfirm": "确定要删除此会话吗？",
     "send": "发送",
@@ -71,7 +75,8 @@
     "showToolMessages": "显示工具调用过程",
     "hideToolMessages": "隐藏工具调用过程",
     "uploading": "上传中...",
-    "uploadFailed": "上传失败"
+    "uploadFailed": "上传失败",
+    "searchSessions": "搜索会话..."
   },
   "providers": {
     "title": "模型提供商",
@@ -114,6 +119,7 @@
     "reload": "重载",
     "reloadAll": "重载全部",
     "reloaded": "重载成功",
+    "reloadedAll": "所有通道已重载",
     "configure": "配置",
     "save": "保存",
     "saved": "保存成功",
@@ -187,8 +193,10 @@
     "delete": "删除",
     "deleteConfirm": "确定要删除此 MCP 服务器吗？",
     "save": "保存",
+    "created": "创建成功",
     "saved": "保存成功",
     "deleted": "删除成功",
+    "serversAdded": "已添加 {{count}} 个服务器",
     "modeJson": "粘贴 JSON",
     "modeManual": "手动填写",
     "jsonHint": "支持 Claude Desktop、Cursor 等标准 MCP 配置格式，直接粘贴即可批量添加。",
@@ -222,6 +230,7 @@
     "delete": "删除",
     "deleteConfirm": "确定要删除此技能吗？",
     "save": "保存",
+    "created": "创建成功",
     "saved": "保存成功",
     "deleted": "删除成功",
     "content": "内容",
@@ -244,6 +253,7 @@
     "enable": "启用",
     "disable": "禁用",
     "save": "保存",
+    "created": "创建成功",
     "saved": "保存成功",
     "deleted": "删除成功",
     "nextRun": "下次运行",
@@ -301,7 +311,9 @@
     "regionPlaceholder": "oss-cn-hangzhou",
     "publicBaseUrl": "公开访问 URL 前缀",
     "publicBaseUrlPlaceholder": "https://my-bucket.oss-cn-hangzhou.aliyuncs.com",
-    "publicBaseUrlDesc": "上传文件后生成链接的 URL 前缀，留空则自动拼接 endpoint/bucket"
+    "publicBaseUrlDesc": "上传文件后生成链接的 URL 前缀，留空则自动拼接 endpoint/bucket",
+    "saved": "S3 配置已保存",
+    "saveFailed": "保存失败"
   },
   "sysconfig": {
     "tabEditor": "配置编辑器",
@@ -316,6 +328,11 @@
     "exportBtn": "下载备份文件",
     "exportSuccess": "配置已导出",
     "exportError": "导出失败",
+    "saved": "配置已保存",
+    "saveFailed": "保存失败",
+    "importSuccess": "导入成功",
+    "importSuccessBackup": "导入成功，原配置已备份至：{{path}}",
+    "importFailed": "导入失败",
     "import": "导入 .nanobot 配置",
     "importDesc": "上传之前导出的 ZIP 备份文件，覆盖当前 ~/.nanobot 目录。导入前会自动备份现有配置。",
     "importBtn": "选择备份文件",
@@ -355,12 +372,18 @@
     "no": "否",
     "refresh": "刷新",
     "actions": "操作",
+    "status": "状态",
     "darkMode": "深色模式",
     "lightMode": "浅色模式",
     "language": "语言",
     "chinese": "中文",
     "english": "English",
     "japanese": "日本語",
-    "optional": "可选"
+    "optional": "可选",
+    "dismiss": "忽略"
+  },
+  "pwa": {
+    "updateAvailable": "发现新版本，点击立即更新",
+    "reload": "立即更新"
   }
 }

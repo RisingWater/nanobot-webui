@@ -25,7 +25,7 @@ export function ChatWindow() {
 
   const visibleMessages = showToolMessages
     ? messages
-    : messages.filter((m) => m.role !== "tool");
+    : messages.filter((m) => m.role !== "tool" && m.role !== "sub_tool" && m.role !== "system");
 
   const wsRef = useRef<ChatWebSocket | null>(null);
   const assistantMsgIdRef = useRef<string | null>(null);

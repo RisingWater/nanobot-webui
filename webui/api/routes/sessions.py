@@ -38,6 +38,7 @@ async def list_sessions(
             key=s["key"],
             created_at=s.get("created_at"),
             updated_at=s.get("updated_at"),
+            last_message=s.get("last_message"),
         )
         for s in visible
     ]

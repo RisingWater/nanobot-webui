@@ -11,6 +11,9 @@
     "settings": "Agents",
     "systemConfig": "System Config",
     "users": "Users",
+    "collapse": "Collapse menu",
+    "expand": "Expand menu",
+    "more": "More",
     "section": {
       "general": "General",
       "admin": "Admin"
@@ -58,6 +61,7 @@
     "sessions": "Sessions",
     "clearHistory": "Clear History",
     "clearConfirm": "Are you sure you want to clear this session's history?",
+    "sessionDeleted": "Session deleted",
     "deleteSession": "Delete Session",
     "deleteConfirm": "Are you sure you want to delete this session?",
     "send": "Send",
@@ -71,7 +75,8 @@
     "showToolMessages": "Show tool call details",
     "hideToolMessages": "Hide tool call details",
     "uploading": "Uploading...",
-    "uploadFailed": "Upload failed"
+    "uploadFailed": "Upload failed",
+    "searchSessions": "Search sessions..."
   },
   "providers": {
     "title": "Providers",
@@ -112,6 +117,7 @@
     "reload": "Reload",
     "reloadAll": "Reload All",
     "reloaded": "Reloaded successfully",
+    "reloadedAll": "All channels reloaded",
     "configure": "Configure",
     "save": "Save",
     "saved": "Saved",
@@ -193,8 +199,10 @@
     "delete": "Delete",
     "deleteConfirm": "Are you sure you want to delete this MCP server?",
     "save": "Save",
+    "created": "Created",
     "saved": "Saved",
     "deleted": "Deleted",
+    "serversAdded": "{{count}} server(s) added",
     "modeJson": "Paste JSON",
     "modeManual": "Manual",
     "jsonHint": "Paste a standard MCP config block (Claude Desktop, Cursor, etc.) to import multiple servers at once.",
@@ -228,6 +236,7 @@
     "delete": "Delete",
     "deleteConfirm": "Are you sure you want to delete this skill?",
     "save": "Save",
+    "created": "Created",
     "saved": "Saved",
     "deleted": "Deleted",
     "content": "Content",
@@ -250,6 +259,7 @@
     "enable": "Enable",
     "disable": "Disable",
     "save": "Save",
+    "created": "Created",
     "saved": "Saved",
     "deleted": "Deleted",
     "nextRun": "Next Run",
@@ -307,7 +317,9 @@
     "regionPlaceholder": "oss-cn-hangzhou",
     "publicBaseUrl": "Public URL Prefix",
     "publicBaseUrlPlaceholder": "https://my-bucket.oss-cn-hangzhou.aliyuncs.com",
-    "publicBaseUrlDesc": "URL prefix for uploaded files. Leave blank to auto-generate from endpoint/bucket."
+    "publicBaseUrlDesc": "URL prefix for uploaded files. Leave blank to auto-generate from endpoint/bucket.",
+    "saved": "S3 config saved",
+    "saveFailed": "Save failed"
   },
   "sysconfig": {
     "tabEditor": "Config Editor",
@@ -322,6 +334,11 @@
     "exportBtn": "Download Backup",
     "exportSuccess": "Config exported",
     "exportError": "Export failed",
+    "saved": "Config saved",
+    "saveFailed": "Save failed",
+    "importSuccess": "Import successful",
+    "importSuccessBackup": "Import successful. Previous config backed up to: {{path}}",
+    "importFailed": "Import failed",
     "import": "Import .nanobot Config",
     "importDesc": "Upload a previously exported ZIP backup to restore ~/.nanobot. The current config is automatically backed up before import.",
     "importBtn": "Select Backup File",
@@ -359,12 +376,18 @@
     "search": "Search",    "yes": "Yes",
     "no": "No",    "refresh": "Refresh",
     "actions": "Actions",
+    "status": "Status",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
     "language": "Language",
     "chinese": "中文",
     "english": "English",
     "japanese": "日本語",
-    "optional": "Optional"
+    "optional": "Optional",
+    "dismiss": "Dismiss"
+  },
+  "pwa": {
+    "updateAvailable": "A new version is available",
+    "reload": "Update now"
   }
 }

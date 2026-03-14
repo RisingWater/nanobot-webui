@@ -1,13 +1,13 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "nanobot-webui"
-version = "0.1.8"
+version = "0.2.0"
 description = "Web management panel for nanobot"
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
 authors = [
     { name = "kangkang223", email = "chenwk.top@foxmail.com" }
 ]
@@ -15,7 +15,6 @@ keywords = ["nanobot", "webui", "ai", "agent"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 requires-python = ">=3.11"

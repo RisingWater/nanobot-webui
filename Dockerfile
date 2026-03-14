@@ -45,5 +45,5 @@ COPY --from=frontend-builder /app/dist ./webui/web/dist/
 ENV UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
 RUN uv pip install --system --no-cache .
 
-EXPOSE 8080
-CMD ["python", "-m", "webui", "--port", "8080"]
+EXPOSE 18780
+CMD ["python", "-m", "webui", "--port", "18780"]

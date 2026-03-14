@@ -7,7 +7,7 @@ import type { ChatMessage } from "../../stores/chatStore";
 import { ToolCallCard } from "./ToolCallCard";
 import { ThinkingBlock } from "./ThinkingBlock";
 import { useAuthStore } from "../../stores/authStore";
-import { Info, ChevronDown, ChevronRight, CheckCircle2, XCircle, Bot, Wrench } from "lucide-react";
+import { Info, ChevronDown, ChevronRight, CheckCircle2, XCircle, Bot, Wrench, Copy, Check } from "lucide-react";
 
 interface MessageBubbleProps {
   message: ChatMessage;
@@ -218,6 +218,16 @@ function SystemMessageBlock({ message }: { message: ChatMessage }) {
   );
 }
 
+/** Aligns tool/system blocks with assistant message content (past the avatar). */
+function ToolMessageWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex gap-3 px-4">
+      <div className="h-8 w-8 shrink-0" />
+      <div className="flex-1 min-w-0">{children}</div>
+    </div>
+  );
+}
+
 export function MessageBubble({ message }: MessageBubbleProps) {
   const user = useAuthStore((s) => s.user);
 
@@ -233,26 +243,35 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   // SubAgent tool result (persisted from session, role="sub_tool")
   if (message.role === "sub_tool") {
-    return <SubAgentToolBlock message={message} />;
+    return <ToolMessageWrapper><SubAgentToolBlock message={message} /></ToolMessageWrapper>;
   }
 
   // SubAgent progress — indigo-tinted block with bot icon
   if (message.role === "tool" && message.isSubAgent) {
-    return <SubAgentProgressBlock message={message} />;
+    return <ToolMessageWrapper><SubAgentProgressBlock message={message} /></ToolMessageWrapper>;
   }
 
   // Tool result — compact collapsible block (no avatar)
   if (message.role === "tool") {
-    return <ToolResultBlock message={message} />;
+    return <ToolMessageWrapper><ToolResultBlock message={message} /></ToolMessageWrapper>;
   }
 
   // System message — compact info strip, collapsed by default (no avatar)
   if (message.role === "system") {
-    return <SystemMessageBlock message={message} />;
+    return <ToolMessageWrapper><SystemMessageBlock message={message} /></ToolMessageWrapper>;
   }
 
   const isUser = message.role === "user";
   const parts = splitThinking(message.content ?? "");
+  const [copied, setCopied] = useState(false);
+
+  const copyContent = () => {
+    const text = message.content ?? "";
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
 
   return (
     <div className={cn("group flex gap-3 px-4", isUser ? "flex-row-reverse" : "flex-row")}>
@@ -306,9 +325,22 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             )}
           </div>
         )}
-        <span className="text-[11px] text-muted-foreground/60 px-1">
-          {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-        </span>
+        <div className="flex items-center gap-1 px-1">
+          <span className="text-[11px] text-muted-foreground/60">
+            {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </span>
+          {!message.isStreaming && (
+            <button
+              onClick={copyContent}
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground/50 hover:text-muted-foreground p-0.5 rounded"
+              aria-label="Copy message"
+            >
+              {copied
+                ? <Check className="h-3 w-3 text-emerald-500" />
+                : <Copy className="h-3 w-3" />}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

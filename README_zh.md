@@ -30,9 +30,17 @@
 
 ## 界面预览
 
+**桌面端**
+
 | 登录页 | 仪表板 | 对话 |
 |--------|--------|------|
 | ![登录页](docs/login.png) | ![仪表板](docs/dashboard.png) | ![对话](docs/session.png) |
+
+**移动端**
+
+| 仪表板 | 对话 | 会话 |
+|--------|------|------|
+| ![移动端仪表板](docs/mobile_dashboard.png) | ![移动端对话](docs/mobile_chat.png) | ![移动端会话](docs/mobile_session.jpg) |
 
 ---
 
@@ -49,6 +57,10 @@
 | **定时任务** | 新建、编辑、启停定时任务 |
 | **代理设置** | 模型、温度、最大 Token、记忆窗口、工作区路径等 |
 | **用户管理** | 多用户管理，支持 `admin` / `user` 两种角色 |
+| **PWA 支持** | 可安装为桌面 / 主屏幕应用；后台自动检测新版本并提示一键更新 |
+| **移动端适配** | 响应式布局，针对 iOS Safari 键盘弹出做专项适配，确保输入框始终可见 |
+| **深色模式** | 亮色 / 暗色一键切换，首次访问自动跟随系统偏好；暗色方案采用暖色调以匹配品牌色 |
+| **多语言（i18n）** | 内置中文、英文、日文三套界面语言，可实时切换 |
 
 ---
 
@@ -73,7 +85,7 @@ nanobot webui --port 9090
 nanobot webui --daemon
 ```
 
-浏览器访问 **http://localhost:8080**，默认账号：**admin / nanobot**，首次登录后请立即修改密码。
+浏览器访问 **http://localhost:18780**，默认账号：**admin / nanobot**，首次登录后请立即修改密码。
 
 ---
 
@@ -91,9 +103,9 @@ services:
     image: kangkang223/nanobot-webui:latest
     container_name: nanobot-webui
     volumes:
-      - ~/.nanobot-webui:/root/.nanobot   # 配置与数据持久化
+      - ~/.nanobot:/root/.nanobot   # 配置与数据持久化
     ports:
-      - "8080:8080"    # WebUI
+      - "18780:18780"    # WebUI
       - "18790:18790"  # nanobot 网关（可选，IM 通道 Webhook 回调用）
     restart: unless-stopped
 ```
@@ -111,7 +123,7 @@ docker compose logs -f
 docker compose down
 ```
 
-浏览器访问 **http://localhost:8080**，默认账号：**admin / nanobot**，请在首次登录后立即修改密码。
+浏览器访问 **http://localhost:18780**，默认账号：**admin / nanobot**，请在首次登录后立即修改密码。
 
 > **数据目录：** 所有配置、会话及工作区文件保存在宿主机的 `~/.nanobot-webui` 目录（映射到容器内的 `/root/.nanobot`）。
 
@@ -127,8 +139,8 @@ docker build -t nanobot-webui .
 # 运行
 docker run -d \
   --name nanobot-webui \
-  -p 8080:8080 \
-  -v ~/.nanobot-webui:/root/.nanobot \
+  -p 18780:18780 \
+  -v ~/.nanobot:/root/.nanobot \
   --restart unless-stopped \
   nanobot-webui
 ```
@@ -158,7 +170,7 @@ make release-dated  # 构建并推送 :YYYY-MM-DD + :latest（多架构）
 用法: nanobot webui [OPTIONS] [COMMAND]
 
 选项:
-  -p, --port INTEGER        WebUI 端口（默认: 8080）
+  -p, --port INTEGER        WebUI 端口（默认: 18780）
   -g, --gateway-port INT    nanobot 网关端口（默认: 读取配置文件）
       --host TEXT           绑定地址（默认: 0.0.0.0）
   -w, --workspace PATH      覆盖工作区目录
@@ -211,7 +223,7 @@ nanobot status  # 显示 WebUI 进程状态 + nanobot 配置信息
 ```
 🐈 nanobot Status
 
-WebUI: ✓ running (PID 12345 • http://localhost:8080)
+WebUI: ✓ running (PID 12345 • http://localhost:18780)
 Log  : /Users/xxx/.nanobot/webui.log
 
 Config: /Users/xxx/.nanobot/config.json ✓
@@ -236,12 +248,12 @@ uv venv               # 创建虚拟环境——不要修改中央 Python 安装
 uv pip install -e .
 
 # 2. 启动后端
-uv run webui                        # API + 静态文件服务于 :8080
+uv run webui                          # API + 静态文件服务于 :18780
 
 # 3. 启动前端开发服务器（另开终端）
 cd web
 bun install
-bun dev                              # http://localhost:5173（自动代理 /api → :8080）
+bun dev                              # http://localhost:5173（自动代理 /api → :18780）
 ```
 
 生产构建：
