@@ -122,7 +122,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     >
       {/* Logo + collapse toggle */}
       <div className={cn(
-        "flex h-12 shrink-0 items-center",
+        "group flex h-12 shrink-0 items-center",
         collapsed ? "justify-center px-1" : "justify-between pl-4 pr-2"
       )}>
         {!collapsed && (
@@ -132,8 +132,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           onClick={onToggle}
           title={collapsed ? t("nav.expand") : t("nav.collapse")}
           className={cn(
-            "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
-            "text-[hsl(var(--sidebar-muted))] hover:bg-[hsl(var(--sidebar-hover-bg))] hover:text-[hsl(var(--sidebar-fg))]"
+            "flex h-7 w-7 items-center justify-center rounded-md transition-all duration-200",
+            "text-[hsl(var(--sidebar-muted))] hover:bg-[hsl(var(--sidebar-hover-bg))] hover:text-[hsl(var(--sidebar-fg))]",
+            "opacity-0 group-hover:opacity-100",
+            collapsed && "opacity-100"
           )}
         >
           {collapsed
