@@ -116,6 +116,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         collapsed ? "w-14" : "w-48"
       )}
       style={{
+        width: collapsed ? undefined : "202px",
         background: "hsl(var(--sidebar-bg))",
         boxShadow: "var(--sidebar-edge-shadow)",
       }}
@@ -126,7 +127,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         collapsed ? "justify-center px-1" : "justify-between pl-4 pr-2"
       )}>
         {!collapsed && (
-          <img src="/logo.png" alt="Nanobot" className="h-9 max-w-[128px] w-auto object-contain object-left mix-blend-multiply dark:invert dark:mix-blend-screen" />
+          <img src="/logo.png" alt="Nanobot" className="h-18 max-w-[140px] w-auto object-contain object-left mix-blend-multiply dark:mix-blend-normal dark:brightness-90" />
         )}
         <button
           onClick={onToggle}

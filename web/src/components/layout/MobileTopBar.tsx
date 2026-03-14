@@ -36,7 +36,7 @@ export function MobileTopBar() {
         <img
           src="/logo.png"
           alt="Nanobot"
-          className="h-7 w-auto max-w-[96px] object-contain object-left mix-blend-multiply dark:invert dark:mix-blend-screen"
+          className="h-7 w-auto max-w-[96px] object-contain object-left mix-blend-multiply dark:mix-blend-normal dark:brightness-90"
         />
 
         {/* Right actions */}
