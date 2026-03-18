@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.2.1 — 2026-03-18
+
+**Config Editor**
+- Add config diff highlight feature — visualize changes between current and saved config
+- Add line numbers to config editor (DiffEditor) with scroll-sync gutter, dark mode support
+
+**Agent & Provider**
+- Upgrade `nanobot-ai` dependency to `0.1.4.post5`
+- Update AgentLoop construction: replace legacy params with `GenerationSettings` + `web_search_config` + `context_window_tokens`
+- Fix patch compatibility: add `tool_choice` param to `provider._patched_chat`; update SubagentManager tool registration (`WebSearchConfig`, `extra_allowed_dirs`); add `background_tasks` drain in `close_mcp`
+- Fix channels route to handle dict-typed channel configs
+
+**Settings & i18n**
+- Replace `memory_window` with `context_window_tokens` in API models, routes and frontend
+- Update i18n labels for context window setting (en / zh / ja)
+
+**UI Polish**
+- Soften chat bubble and active session colors from vivid primary orange to muted palette; add dark mode variants
+
+---
+
 ## v0.2.0 — 2026-03-15
 
 **Settings & Config**
